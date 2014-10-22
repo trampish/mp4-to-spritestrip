@@ -36,6 +36,39 @@
       alt => null
     ],
     1 => [
+      prompt => 'Please specify a start time using the HH:MM:SS.MS format, milleseconds optional:',
+      validator => null,
+      alt => null,
+      default => '00:00:00'
+    ],
+    2 => [
+      prompt => 'Please specify length using the HH:MM:SS.MS format, milleseconds optional:',
+      validator => null,
+      alt => null
+    ],
+    3 => [
+      prompt => 'Please specify a video file using a relative path:',
+      validator => null,
+      alt => null
+    ],
+    4 => [
+      prompt => 'Please specify a framerate:',
+      validator => null,
+      alt => null,
+      default => 7.0
+    ],
+    5 => [
+      prompt => 'Please specify an output resolution, default is the video file\'s native resolution:',
+      validator => null,
+      alt => null
+    ],
+    6 => [
+      prompt => 'Please specify an output filename:',
+      validator => null,
+      alt => null,
+      default => 'untitled.jpg'
+    ],
+    1 => [
       prompt => 'Please enter the set / language codes. Use the format \'SET-EN\', where SET is the three-letter set code and EN is the two-letter lang code.',
       validator => 'validateSetLangCode',
       alt => 'SET-EN'
