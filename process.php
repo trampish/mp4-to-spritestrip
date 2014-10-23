@@ -198,6 +198,12 @@
 
   // To Do: JPG Assembly (GD?)
   // To Do: Cropping / Resizing ?
+
+    // Steps:
+    // Create an array of all the files in the working tmp folder
+    // Loop through the array loading the images, cropping them to the final size and appending the cropped result horizontally to the master image variable.
+    // Save out the sprite strip noting the total number of frames and the final / total dimensions
+
   // To Do: Demo Files Assemby
 
   //  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
