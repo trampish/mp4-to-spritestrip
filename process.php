@@ -140,29 +140,34 @@
     ],
     3 => [
       prompt => 'Please specify a framerate:',
+      variable => 'framerate',
       validator => null,
       alt => null,
       defaultval => 7.0
     ],
     4 => [
-      prompt => 'Please specify an output resolution, default is the video file\'s native resolution:',
+      prompt => 'Please specify an output resolution, default is the video file\'s native resolution: WxH',
+      variable => 'resolution'
       validator => null,
       alt => null
     ],
     5 => [
       prompt => 'Please specify an output filename:',
+      variable => 'projectName',
       validator => null,
       alt => null,
       defaultval => 'untitled.jpg'
     ],
     6 => [
       prompt => 'Do you want to assemble the spritestrip immediately? Y/N',
-      validator => validateYN,
+      variable => 'buildImageNow',
+      validator => 'validateYN',
       alt => null
     ],
     7 => [
       prompt => 'Do you want to create a demo file? Y/N',
-      validator => validateYN,
+      variable => 'buildDemoNow',
+      validator => 'validateYN',
       alt => null
     ],
     7 => [
@@ -192,6 +197,7 @@
   // ./ffmpeg -ss 00:00:21 -t 00:00:13 -i cycling.mov -r 7.0 -s 622x350 cycling/cycling%4d.jpg
 
   // To Do: JPG Assembly (GD?)
+  // To Do: Cropping / Resizing ?
   // To Do: Demo Files Assemby
 
   //  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
