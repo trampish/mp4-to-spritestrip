@@ -45,6 +45,37 @@
       }
   }
 
+  function video_attributes($video, $ffmpeg) {
+
+    $command = $ffmpeg . ' -i ' . $video . ' -vstats 2>&1';
+    $output = shell_exec($command);
+
+    $regex_sizes = "/Video: ([^,]*), ([^,]*), ([0-9]{1,4})x([0-9]{1,4})/";
+    if (preg_match($regex_sizes, $output, $regs)) {
+        $codec = $regs [1] ? $regs [1] : null;
+        $width = $regs [3] ? $regs [3] : null;
+        $height = $regs [4] ? $regs [4] : null;
+     }
+
+    $regex_duration = "/Duration: ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}).([0-9]{1,2})/";
+    if (preg_match($regex_duration, $output, $regs)) {
+        $hours = $regs [1] ? $regs [1] : null;
+        $mins = $regs [2] ? $regs [2] : null;
+        $secs = $regs [3] ? $regs [3] : null;
+        $ms = $regs [4] ? $regs [4] : null;
+    }
+
+    return array ('codec' => $codec,
+            'width' => $width,
+            'height' => $height,
+            'hours' => $hours,
+            'mins' => $mins,
+            'secs' => $secs,
+            'ms' => $ms
+    );
+
+  }
+
   function createDemo($projectName, $dimensions) {
     getAssets($demoAssets);
 
@@ -76,71 +107,92 @@
       exit;
     }
 
+  //
+  // Layout of each step:
+  //
+  // {int: step id} => [
+  //   prompt => '{string: prompt seen by user, always be polite}',
+  //   variable => '{string: name of variable to be assigned value from user input}',
+  //   validator => '{string: name of validator function user input run against}',
+  //   defaultval => '{default value if not provided by user}'
+  // ],
+  //
 
   $steps = [
     0 => [
       prompt => 'Please specify a video file using a relative path:',
+      variable => 'inputFile',
       validator => null,
       alt => null
     ],
     1 => [
       prompt => 'Please specify a start time using the HH:MM:SS.MS format, milleseconds optional:',
+      variable => 'startTime',
       validator => null,
       alt => null,
       defaultval => '00:00:00'
     ],
     2 => [
       prompt => 'Please specify clip length using the HH:MM:SS.MS format, milleseconds optional:',
+      variable => 'clipLength',
       validator => null,
       alt => null
     ],
     3 => [
-      prompt => 'Please specify a video file using a relative path:',
-      validator => null,
-      alt => null
-    ],
-    4 => [
       prompt => 'Please specify a framerate:',
       validator => null,
       alt => null,
       defaultval => 7.0
     ],
-    5 => [
+    4 => [
       prompt => 'Please specify an output resolution, default is the video file\'s native resolution:',
       validator => null,
       alt => null
     ],
-    6 => [
+    5 => [
       prompt => 'Please specify an output filename:',
       validator => null,
       alt => null,
       defaultval => 'untitled.jpg'
     ],
-    7 => [
+    6 => [
       prompt => 'Do you want to assemble the spritestrip immediately? Y/N',
       validator => validateYN,
       alt => null
     ],
-    8 => [
+    7 => [
+      prompt => 'Do you want to create a demo file? Y/N',
+      validator => validateYN,
+      alt => null
+    ],
+    7 => [
       prompt => 'Please enter the set / language codes. Use the format \'SET-EN\', where SET is the three-letter set code and EN is the two-letter lang code.',
       validator => 'validateSetLangCode',
       alt => 'SET-EN'
     ]
   ];
 
+  // We're going to iterate through the prompts, collecting data and assembling our FFmpeg command
+  $i = 0;
+  foreach($steps as $step) {
 
-  $x = 7;
+    $input = userPrompt($step['prompt'] . $lb, $step['validator']) ?: $step['alt'];
 
-  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
+    // Can we mutate user input in the validator functions?
+    if ($i == 0) {
+      // Get file attributes
+      $vidAttr = video_attributes($input, 'ffmpeg/ffmpeg');
+    }
 
+    $i++;
+  }
 
-  $ffcommand = './ffmpeg/ffmpeg -ss ' . $startTime . ' -t ' . $clipLength . '';
-
-  //foreach ($steps as $step) {
-  //  $value = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
-  //}
-
-  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
-  var_dump($code);
+  $ffcommand = './ffmpeg/ffmpeg -ss ' . $startTime . ' -t ' . $clipLength . ' -i ' . $inputFile . ' -r ' . $framerate . ' -s ' . $resolution;
 
   // ./ffmpeg -ss 00:00:21 -t 00:00:13 -i cycling.mov -r 7.0 -s 622x350 cycling/cycling%4d.jpg
+
+  // To Do: JPG Assembly (GD?)
+  // To Do: Demo Files Assemby
+
+  //  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
+  //  var_dump($code);

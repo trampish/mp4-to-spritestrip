@@ -2,3 +2,4 @@ ffmpeg/ffmpeg
 ffmpeg/ffprobe
 ffmpeg/ffserver
 demo/*
+sample.mp4
