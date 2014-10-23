@@ -1,12 +1,13 @@
 <?php
 
-  // Config
+  // Config =====================
 
   $demoAssets = [
     'https://raw.githubusercontent.com/blaiprat/jquery.animateSprite/master/scripts/jquery.animateSprite.min.js',
     'http://code.jquery.com/jquery-1.11.1.js',
   ];
 
+  $lb = "\r\n"; // Appends linebreaks to all prompts
 
   // Helper Functions =====================
 
@@ -47,11 +48,11 @@
   function createDemo($projectName, $dimensions) {
     getAssets($demoAssets);
 
-    //
+    // To Do: demo template, injection of relevant variables for jquery.AnimateSprite
 
   }
 
-  // Example =====================
+  // Validator Functions =====================
 
   function validateSetLangCode($str) {
       return preg_match("/^[A-Z0-9]{3}-[A-Z]{2}$/", $str);
@@ -65,6 +66,15 @@
         return false;
       }
   }
+
+  // Initial Set Up =====================
+
+    // If you don't have ffmpeg installed, you're gonna have a bad time.
+    if (!file_exists('ffmpeg/ffmpeg')) {
+      if (!file_exists('ffmpeg')) { mkdir('ffmpeg'); }
+      echo "You don't have FFmpeg installed properly." . $lb . "Please put ensure the binary for your system is in the `ffmpeg` folder." . $lb;
+      exit;
+    }
 
 
   $steps = [
@@ -118,22 +128,19 @@
     ]
   ];
 
-  getAssets();
-
-  $append = "\r\n"; // Appends linebreaks to all prompts
 
   $x = 7;
 
-  $code = userPrompt($steps[$x]['prompt'] . $append, $steps[$x]['validator']) ?: $steps[$x]['alt'];
+  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
 
 
   $ffcommand = './ffmpeg/ffmpeg -ss ' . $startTime . ' -t ' . $clipLength . '';
 
   //foreach ($steps as $step) {
-  //  $value = userPrompt($steps[$x]['prompt'] . $append, $steps[$x]['validator']) ?: $steps[$x]['alt'];
+  //  $value = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
   //}
 
-  $code = userPrompt($steps[$x]['prompt'] . $append, $steps[$x]['validator']) ?: $steps[$x]['alt'];
+  $code = userPrompt($steps[$x]['prompt'] . $lb, $steps[$x]['validator']) ?: $steps[$x]['alt'];
   var_dump($code);
 
   // ./ffmpeg -ss 00:00:21 -t 00:00:13 -i cycling.mov -r 7.0 -s 622x350 cycling/cycling%4d.jpg
