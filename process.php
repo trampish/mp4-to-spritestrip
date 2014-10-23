@@ -28,6 +28,15 @@
       return preg_match("/^[A-Z0-9]{3}-[A-Z]{2}$/", $str);
   }
 
+  function validateYN($str) {
+      $str = strtoupper($str);
+      if (($str == "Y") || ($str == "N")) {
+        return $str;
+      } else {
+        return false;
+      }
+  }
+
 
   $steps = [
     0 => [
@@ -39,10 +48,10 @@
       prompt => 'Please specify a start time using the HH:MM:SS.MS format, milleseconds optional:',
       validator => null,
       alt => null,
-      default => '00:00:00'
+      defaultval => '00:00:00'
     ],
     2 => [
-      prompt => 'Please specify length using the HH:MM:SS.MS format, milleseconds optional:',
+      prompt => 'Please specify clip length using the HH:MM:SS.MS format, milleseconds optional:',
       validator => null,
       alt => null
     ],
@@ -55,7 +64,7 @@
       prompt => 'Please specify a framerate:',
       validator => null,
       alt => null,
-      default => 7.0
+      defaultval => 7.0
     ],
     5 => [
       prompt => 'Please specify an output resolution, default is the video file\'s native resolution:',
@@ -66,9 +75,14 @@
       prompt => 'Please specify an output filename:',
       validator => null,
       alt => null,
-      default => 'untitled.jpg'
+      defaultval => 'untitled.jpg'
     ],
-    1 => [
+    7 => [
+      prompt => 'Do you want to assemble the spritestrip immediately? Y/N',
+      validator => validateYN,
+      alt => null
+    ],
+    8 => [
       prompt => 'Please enter the set / language codes. Use the format \'SET-EN\', where SET is the three-letter set code and EN is the two-letter lang code.',
       validator => 'validateSetLangCode',
       alt => 'SET-EN'
@@ -77,7 +91,9 @@
 
   $append = "\r\n"; // Appends linebreaks to all prompts
 
-  $x = 0;
+  $x = 7;
+
+  $ffcommand = './ffmpeg/ffmpeg -ss ' . $startTime . ' -t ' . $clipLength . '';
 
   //foreach ($steps as $step) {
   //  $value = userPrompt($steps[$x]['prompt'] . $append, $steps[$x]['validator']) ?: $steps[$x]['alt'];
