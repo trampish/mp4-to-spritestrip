@@ -1,9 +1,31 @@
 <?php
 
+  // Config
+
+  $demoAssets = [
+    'https://raw.githubusercontent.com/blaiprat/jquery.animateSprite/master/scripts/jquery.animateSprite.min.js',
+    'http://code.jquery.com/jquery-1.11.1.js',
+  ];
+
+
   // Helper Functions =====================
 
   function isCLI() {
       return (php_sapi_name() === 'cli' OR defined('STDIN'));
+  }
+
+  function getAssets($items) {
+
+    if (!file_exists('demo/')) {
+      mkdir('demo');
+    }
+
+    foreach ($items as $item) {
+      if (!file_exists('demo/' . basename($item))) {
+        file_put_contents('demo/' . basename($item), file_get_contents($item));
+      }
+    }
+
   }
 
   function userPrompt($message, $validator=null) {
@@ -20,6 +42,13 @@
           print("Continuing...\r\n");
           return $line;
       }
+  }
+
+  function createDemo($projectName, $dimensions) {
+    getAssets($demoAssets);
+
+    //
+
   }
 
   // Example =====================
@@ -89,9 +118,14 @@
     ]
   ];
 
+  getAssets();
+
   $append = "\r\n"; // Appends linebreaks to all prompts
 
   $x = 7;
+
+  $code = userPrompt($steps[$x]['prompt'] . $append, $steps[$x]['validator']) ?: $steps[$x]['alt'];
+
 
   $ffcommand = './ffmpeg/ffmpeg -ss ' . $startTime . ' -t ' . $clipLength . '';
 

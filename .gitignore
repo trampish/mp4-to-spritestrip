@@ -1,3 +1,4 @@
 ffmpeg/ffmpeg
 ffmpeg/ffprobe
 ffmpeg/ffserver
+demo/*
