@@ -89,6 +89,10 @@
       return preg_match("/^[A-Z0-9]{3}-[A-Z]{2}$/", $str);
   }
 
+  function validateDimension($str) {
+      return preg_match("(/(\d{1,6})x(\d{1,6})/", $str);
+  }
+
   function validateYN($str) {
       $str = strtoupper($str);
       if (($str == "Y") || ($str == "N")) {
@@ -148,7 +152,7 @@
     4 => [
       prompt => 'Please specify an output resolution, default is the video file\'s native resolution: WxH',
       variable => 'resolution'
-      validator => null,
+      validator => validateDimension,
       alt => null
     ],
     5 => [
